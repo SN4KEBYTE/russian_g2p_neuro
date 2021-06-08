@@ -1,20 +1,21 @@
 import re
-import os
 import sys
-
 from pathlib import Path
+
 from src.model import Russian_G2P
 
 MODULE_PATH = Path(__file__).parents[1]
 
 g2p = Russian_G2P(MODULE_PATH / 'model')
 
+
 def write_result_to_file(dictionary, output_filename, sep=' '):
     lines = []
     for word, transcription in dictionary.items():
         lines += [sep.join([word, transcription])]
-    with open(output_filename, 'w') as f:
+    with open(output_filename, 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines))
+
 
 def transcribe_word_list(wordlist):
     result = {}
@@ -23,8 +24,9 @@ def transcribe_word_list(wordlist):
         result[word] = ' '.join(prediction)
     return result
 
+
 def find_words_in_file(filename):
-    with open(filename) as f:
+    with open(filename, 'r', encoding='utf-8') as f:
         text = f.read().lower()
     words = re.findall(
         '[ёйцукенгшщзхъэждлорпавыфячсмитьбю\-]+',
@@ -32,6 +34,7 @@ def find_words_in_file(filename):
     )
     words = sorted(list(set(words)))
     return words
+
 
 if __name__ == '__main__':
     input_filename = sys.argv[1]
